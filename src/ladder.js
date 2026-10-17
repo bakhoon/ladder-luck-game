@@ -12,7 +12,11 @@ export const BUDDIES = [
   { color: '#7B5EA7', name: 'Purple' },
   { color: '#E879A6', name: 'Pink' },
   { color: '#8B5E3C', name: 'Brown' },
+  { color: '#2A9D8F', name: 'Teal' },
+  { color: '#6CB4E4', name: 'Sky' },
 ];
+
+export const MAX_PLAYERS = BUDDIES.length; // 10
 
 export const PENS = BUDDIES.slice(0, 6);
 

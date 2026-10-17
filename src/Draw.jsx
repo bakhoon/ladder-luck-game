@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { BUDDIES, PENS, W, H, colX, nearest, snapDistance, clash, clampY, randomRungs } from './ladder.js';
+import { PENS, W, H, colX, nearest, snapDistance, clash, clampY, randomRungs } from './ladder.js';
 import { Buddy, Header, Arrow, Lane, LadderSvg } from './components.jsx';
 
 const DEFAULT_HINT = 'Drag from one line to the next. Wobbly is OK! Tap a rung to erase it.';
 
-export default function Draw({ n, rungs, setRungs, onBack, onGo }) {
+export default function Draw({ n, players, rungs, setRungs, onBack, onGo }) {
   const [pen, setPen] = useState(PENS[5].color);
   const [msg, setMsg] = useState('');
   const [drag, setDrag] = useState(null);
   const svgRef = useRef(null);
-  const colors = BUDDIES.slice(0, n).map((b) => b.color);
+  const colors = players.map((p) => p.color);
+  const laneW = W / n;
   const snap = snapDistance(n);
   const buddySize = Math.min(42, Math.floor((W / n) - 8));
 
@@ -91,8 +92,13 @@ export default function Draw({ n, rungs, setRungs, onBack, onGo }) {
         ))}
       </div>
 
-      <Lane n={n} height={buddySize + 8}>
-        {(i) => <div style={{ paddingTop: 4 }}><Buddy color={colors[i]} size={buddySize} /></div>}
+      <Lane n={n} height={buddySize + 22}>
+        {(i) => (
+          <div style={{ paddingTop: 2, width: laneW, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Buddy color={colors[i]} size={buddySize} />
+            <span className="lane-name" style={{ width: laneW }}>{players[i].name}</span>
+          </div>
+        )}
       </Lane>
 
       <div

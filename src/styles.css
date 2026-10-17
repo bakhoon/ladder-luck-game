@@ -114,8 +114,28 @@ h1.big { font-size: 54px; }
 }
 .buddy i { display: block; width: 6px; height: 8px; border-radius: 50%; background: var(--ink); }
 
+.names { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px; }
+.name-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.name-row input {
+  flex: 1; min-width: 0; height: 44px;
+  padding: 0 10px;
+  border: 2px solid var(--ink);
+  border-radius: 12px 9px 13px 10px;
+  background: var(--paper);
+  font-family: var(--hand); font-weight: 700; font-size: 20px; color: var(--ink);
+}
+.name-row input::placeholder { color: rgba(58, 46, 38, .4); }
+.name-row input:focus { outline: 3px dashed var(--blue); outline-offset: 2px; background: #fff; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.lane-name {
+  display: block; margin-top: 2px;
+  font-size: 11px; line-height: 1.1; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
 .chip {
-  width: 44px; height: 44px;
+  width: 40px; height: 40px;
   border: 2.5px solid var(--ink);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--hand); font-weight: 700; font-size: 24px;

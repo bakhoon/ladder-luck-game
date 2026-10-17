@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BUDDIES, W, trace, pathLength, partialPath } from './ladder.js';
+import { W, trace, pathLength, partialPath } from './ladder.js';
 import { Buddy, Header, Lane, LadderSvg, CrayonPath } from './components.jsx';
 
 const SPEED = 150; // board units per second
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2); // slow start, slow finish
 
-export default function Play({ n, rungs, results, onRedraw, onNewGame }) {
-  const buddies = BUDDIES.slice(0, n);
+export default function Play({ n, players, rungs, results, onRedraw, onNewGame }) {
+  const buddies = players;
   const colors = buddies.map((b) => b.color);
+  const laneW = W / n;
   const paths = useMemo(() => buddies.map((_, i) => trace(i, n, rungs)), [n, rungs]); // eslint-disable-line react-hooks/exhaustive-deps
   const [done, setDone] = useState({}); // start -> true
   const [active, setActive] = useState(null);
@@ -60,16 +61,17 @@ export default function Play({ n, rungs, results, onRedraw, onNewGame }) {
       <Header step={3} title="Who's the bust?" right={<span style={{ fontSize: 14 }}><b>{Object.keys(shown).length}</b> / {n} arrived</span>} />
       <div className="banner wax" style={{ backgroundColor: bannerBg }} aria-live="polite">{banner}</div>
 
-      <Lane n={n} height={size + 10}>
+      <Lane n={n} height={size + 26}>
         {(i) => (
           <button
             className={`start-btn ${active === i ? 'moving' : ''} ${shown[i] && active !== i ? 'used' : ''}`}
             aria-label={`Send ${buddies[i].name} down the ladder`}
             onClick={() => go(i)}
             disabled={active !== null || !!shown[i]}
-            style={{ minWidth: 44, minHeight: 44 }}
+            style={{ width: laneW, minHeight: 44, flexDirection: 'column', padding: '2px 0' }}
           >
             <Buddy color={colors[i]} size={size} />
+            <span className="lane-name" style={{ width: laneW - 2, fontWeight: active === i ? 700 : 400 }}>{buddies[i].name}</span>
           </button>
         )}
       </Lane>
@@ -100,9 +102,10 @@ export default function Play({ n, rungs, results, onRedraw, onNewGame }) {
             return <div className="result scribble" style={{ width: w }}><span className="q">?</span></div>;
           }
           const bust = results[j] === 'bust';
+          const narrow = w < 44;
           return (
-            <div className="result wax pop" style={{ width: w, backgroundColor: bust ? '#C9C0B3' : '#F2C14E' }}>
-              <span className="label">{bust ? 'Bust' : 'Safe'}</span>
+            <div className="result wax pop" style={{ width: w, backgroundColor: bust ? '#C9C0B3' : '#F2C14E' }} aria-label={`${buddies[who].name}: ${bust ? 'Bust' : 'Safe'}`}>
+              <span className="label" style={narrow ? { fontSize: 22 } : undefined}>{narrow ? (bust ? 'X' : 'O') : bust ? 'Bust' : 'Safe'}</span>
               <span className="who" style={{ backgroundColor: colors[who] }} />
             </div>
           );
